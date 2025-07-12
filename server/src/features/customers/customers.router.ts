@@ -1,5 +1,6 @@
 import express from "express";
-import { getCustomerDetail, getCustomers } from "./customers.service";
+import { getCustomerDetail, getCustomers, searchCustomers } from "./customers.service";
+import { getOrdersForCustomer } from "../orders/orders.service";
 
 export const customersRouter = express.Router();
 
@@ -20,3 +21,19 @@ customersRouter.get("/:id", async (req, res) => {
     res.status(404).json({ message: "Customer Not Found"})
   }
 });
+
+// get orders
+
+customersRouter.get(":id/orders", async (require, res) =>{
+  const id = require.params.id;
+  const orders = await getOrdersForCustomer(id);
+  res.json(orders);
+})
+
+// search
+
+customersRouter.get("/search/:query", async (req, res) => {
+  const query = req.params.query;
+  const customers = await searchCustomers(query);
+  res.json(customers);
+})
